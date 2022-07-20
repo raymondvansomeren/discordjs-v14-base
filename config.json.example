@@ -1,0 +1,8 @@
+{
+    "token": "",
+    "clientId": "",
+    "logLevel": "debug",
+    "inDevelopment": true,
+    "devServer": "",
+    "color": "#5E202E"
+}
