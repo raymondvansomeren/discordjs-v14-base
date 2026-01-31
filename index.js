@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('node:path');
 const logger = require('log4js').getLogger();
 
 const config = require('./config.json');
@@ -23,26 +24,29 @@ for (const file of commandFiles)
     client.commands.set(command.name, command);
 }
 
-client.on('interactionCreate', async interaction =>
+setTimeout(() =>
 {
-    if (interaction.type != 2) return;
+    client.logger.info('Loading DJS client eventhandlers.');
+    const eventsPath = path.join(__dirname, 'events');
+    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
-    if (!client.commands.has(interaction.commandName)) return;
-
-    try
+    for (const file of eventFiles)
     {
-        await client.commands.get(interaction.commandName).execute(interaction);
+        const filePath = path.join(eventsPath, file);
+        const event = require(filePath);
+        client.logger.debug(`Event ${event.name} loaded!`);
+        if (event.once)
+        {
+            client.once(event.name, (...args) => event.execute(...args));
+        }
+        else
+        {
+            client.on(event.name, (...args) => event.execute(...args));
+        }
     }
-    catch (error)
-    {
-        client.logger.error(error);
-        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-    }
-});
+}, 1000);
 
-client.once('clientReady', () =>
+setTimeout(() =>
 {
-    client.logger.log('Fully started!');
-});
-
-client.login(config.token);
+    client.login(config.token);
+}, 3000);
