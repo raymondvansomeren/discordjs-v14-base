@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, MessageFlags } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
@@ -16,21 +16,21 @@ module.exports = {
 
             // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
             const t = new Date();
-            interaction.reply({ embeds: [embed.data], ephemeral: false })
+            interaction.reply({ embeds: [embed.data] })
                 .then(() =>
                 {
                     const tt = new Date();
                     const ping = tt - t;
                     // embed.setFields({ name: 'Ping', value: `${ping}ms` });
                     embed.setDescription(`${ping}ms`);
-                    interaction.editReply({ embeds: [embed.data], ephemeral: false });
+                    interaction.editReply({ embeds: [embed.data] });
                 });
         }
         catch (err)
         {
             const embed = new EmbedBuilder()
                 .setDescription('Something wen\'t wrong, try again later');
-            interaction.reply({ embeds: [embed.data], ephemeral: true });
+            interaction.reply({ embeds: [embed.data], flags: [MessageFlags.Ephemeral] });
             interaction.client.logger.error(err);
         }
     },

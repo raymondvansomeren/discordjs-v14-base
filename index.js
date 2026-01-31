@@ -40,7 +40,7 @@ client.on('interactionCreate', async interaction =>
     }
 });
 
-client.once('ready', () =>
+client.once('clientReady', () =>
 {
     client.logger.log('Fully started!');
 });
